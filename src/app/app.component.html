@@ -1,0 +1,9 @@
+<div #ogmaContainer id="ogmaContainer"></div>
+<div class="controls">
+  Number of nodes: {{ countNodes() }}
+  <form class="form" #formRef="ngForm">
+    <h3>Action</h3>
+    <button class="btn" (click)="addNode()">Add a node</button>
+  </form>
+  <tooltip />
+</div>
