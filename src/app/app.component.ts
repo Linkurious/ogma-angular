@@ -8,6 +8,12 @@ import {
 import { FormsModule } from '@angular/forms';
 import { OgmaService, createEdge, createNode } from './ogma/service/ogma.service';
 import { TooltipComponent } from './tooltip.component';
+import {MemoizedSelector, select, Store} from "@ngrx/store";
+import {increment} from "./ogma/store/ogma.actions";
+import {getCounterSelector} from "./ogma/store/ogma.selector";
+import {map, Observable} from "rxjs";
+import {AppState} from "./ogma/store/ogma.reducer";
+import {AsyncPipe} from "@angular/common";
 
 @Component({
   selector: 'app-root',
@@ -15,13 +21,13 @@ import { TooltipComponent } from './tooltip.component';
   styleUrls: ['./app.component.css'],
   standalone: true,
   providers: [OgmaService],
-  imports: [FormsModule, TooltipComponent]
+  imports: [FormsModule, TooltipComponent, AsyncPipe]
 })
 export class AppComponent implements OnInit, AfterContentInit {
   @ViewChild('ogmaContainer', { static: true })
   public container!: ElementRef<HTMLElement>;
-
-  constructor(private ogmaService: OgmaService) {}
+  public addedNodes$!: Observable<number>
+  constructor(private ogmaService: OgmaService, private _store: Store<AppState>) {}
 
   ngOnInit() {
     // pass the ogma instance configuration on init
@@ -30,6 +36,9 @@ export class AppComponent implements OnInit, AfterContentInit {
         backgroundColor: 'rgb(240, 240, 240)'
       }
     });
+    // ngRx selector
+    this.addedNodes$ = this.select(getCounterSelector);
+
     // setup more Ogma stuff here, like event listeners and more
   }
 
@@ -67,9 +76,14 @@ export class AppComponent implements OnInit, AfterContentInit {
     // add it to the graph as a subgraph and run layout
     await this.ogmaService.addData({ nodes: [node], edges: [edge] });
     await this.ogmaService.runLayout();
+    this._store.dispatch(increment())
   }
 
   public countNodes() {
     return this.ogmaService.getNodesCount();
+  }
+
+  public select<T>(selector:  MemoizedSelector<AppState, T>): Observable<T>{
+    return this._store.pipe(map((state):T => selector(state)));
   }
 }
