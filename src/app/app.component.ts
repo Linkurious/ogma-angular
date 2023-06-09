@@ -8,9 +8,8 @@ import {
 import { FormsModule } from '@angular/forms';
 import { OgmaService, createEdge, createNode } from './ogma/service/ogma.service';
 import { TooltipComponent } from './tooltip.component';
-import { MemoizedSelector, select, Store } from "@ngrx/store";
-import { increment } from "./ogma/store/ogma.actions";
-import { getCounterSelector, getEdgesSelector, getNodesSelector } from "./ogma/store/ogma.selector";
+import { MemoizedSelector, Store } from "@ngrx/store";
+import {  getEdgesSelector, getNodesSelector } from "./ogma/store/ogma.selector";
 import { map, Observable } from "rxjs";
 import { AppState } from "./ogma/store/ogma.reducer";
 import { AsyncPipe } from "@angular/common";
@@ -42,7 +41,6 @@ export class AppComponent implements OnInit, AfterContentInit {
       }
     });
     // ngRx selector
-    this.addedNodes$ = this.select(getCounterSelector);
     this.nodeIds$ = this.select(getNodesSelector);
     this.edgeIds$ = this.select(getEdgesSelector);
     // setup more Ogma stuff here, like event listeners and more
@@ -85,7 +83,6 @@ export class AppComponent implements OnInit, AfterContentInit {
     // add it to the graph as a subgraph and run layout
     await this.ogmaService.addData({ nodes: [node], edges: [edge] });
     await this.ogmaService.runLayout();
-    this._store.dispatch(increment())
   }
 
   public async removeNode() {
@@ -96,7 +93,6 @@ export class AppComponent implements OnInit, AfterContentInit {
     const nodes = this.ogmaService.ogma.getNodes([randomId]);
     await this.ogmaService.removeData({ nodes });
     await this.ogmaService.runLayout();
-    this._store.dispatch(increment())
   }
 
   public async addEdge() {
@@ -111,7 +107,6 @@ export class AppComponent implements OnInit, AfterContentInit {
       }]
     });
     await this.ogmaService.runLayout();
-    this._store.dispatch(increment())
   }
 
   public async removeEdge() {
@@ -122,7 +117,6 @@ export class AppComponent implements OnInit, AfterContentInit {
     const edges = this.ogmaService.ogma.getEdges([randomId]);
     await this.ogmaService.removeData({ edges });
     await this.ogmaService.runLayout();
-    this._store.dispatch(increment())
   }
 
 

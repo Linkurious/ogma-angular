@@ -1,40 +1,16 @@
 import { createReducer, on } from '@ngrx/store';
-import { increment, decrement, reset, addNodes, removeNodes, addEdges, removeEdges } from './ogma.actions';
+import { addNodes, removeNodes, addEdges, removeEdges } from './ogma.actions';
 import { EdgeId, NodeId } from '@linkurious/ogma/dev';
 
 export interface AppState {
-    addedNodes: number;
     nodeIds: NodeId[];
     edgeIds: EdgeId[];
 
 }
 export const initialState: AppState = {
-    addedNodes: 0,
     nodeIds: [],
     edgeIds: [],
 };
-
-export const counterReducer = createReducer(
-    initialState,
-    on(increment, (state) => {
-        return {
-            ...state,
-            addedNodes: state.addedNodes + 1
-        }
-    }),
-    on(decrement, (state) => {
-        return {
-            ...state,
-            addedNodes: state.addedNodes - 1
-        }
-    }),
-    on(reset, (state) => {
-        return {
-            ...state,
-            addedNodes: 0
-        }
-    })
-);
 
 export const nodeIdsReducer = createReducer(
     initialState,
