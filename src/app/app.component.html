@@ -3,13 +3,14 @@
   <div>Number of nodes: {{ countNodes() }}</div>
   <div>Number of added nodes: {{ addedNodes$ | async }}</div>
   <div>nodeIds: {{ nodeIds$ | async }}</div>
-
-
+  <div>edgeIds: {{ edgeIds$ | async }}</div>
 
   <form class="form" #formRef="ngForm">
     <h3>Action</h3>
     <button class="btn" (click)="addNode()">Add a node</button>
     <button class="btn" (click)="removeNode()">Remove a node</button>
+    <button class="btn" (click)="addEdge()">Add an edge</button>
+    <button class="btn" (click)="removeEdge()">Remove an edge</button>
 
   </form>
   <tooltip />

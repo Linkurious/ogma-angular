@@ -11,7 +11,7 @@ import Ogma, {
 } from '@linkurious/ogma';
 import { AppState } from '../store/ogma.reducer';
 import { Store } from '@ngrx/store';
-import { addNodes, removeNodes } from '../store/ogma.actions';
+import { addEdges, addNodes, removeEdges, removeNodes } from '../store/ogma.actions';
 
 export const createNode = (id: number): RawNode => ({
   id,
@@ -43,6 +43,14 @@ export class OgmaService {
     this.ogma.events.on('removeNodes', ({ nodes }) => {
       this._store.dispatch(removeNodes({ ids: nodes.getId() }));
     });
+
+    this.ogma.events.on('addEdges', ({ edges }) => {
+      this._store.dispatch(addEdges({ ids: edges.getId() }));
+    });
+
+    this.ogma.events.on('removeEdges', ({ edges }) => {
+      this._store.dispatch(removeEdges({ ids: edges.getId() }));
+    });
   }
 
   public runLayout() {
@@ -62,13 +70,13 @@ export class OgmaService {
     }
   }
 
-  public getNodesCount() {
-    return this.ogma.getNodes().size;
-  }
-
   public getNodes() {
     return this.ogma.getNodes();
   }
+  public getEdges() {
+    return this.ogma.getEdges();
+  }
+
 
   public applyStyles(styles: NodeStyleRuleDefinition<unknown, unknown>) {
     return this.ogma.styles.addRule(styles);
