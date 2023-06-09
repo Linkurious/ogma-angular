@@ -1,17 +1,19 @@
 import { createReducer, on } from '@ngrx/store';
-import { addNodes, removeNodes, addEdges, removeEdges, setView } from './ogma.actions';
+import { addNodes, removeNodes, addEdges, removeEdges, setView, addNodeFilter, updateNodeFilter, removeNodeFilter } from './ogma.actions';
 import { EdgeId, NodeId, View } from '@linkurious/ogma';
+import { FilterState } from '../service/transformation.service';
 
 export interface AppState {
     nodeIds: NodeId[];
     edgeIds: EdgeId[];
     view: View;
-
+    transformations: FilterState[];
 }
 export const initialState: AppState = {
     nodeIds: [],
     edgeIds: [],
-    view: {x: 0, y: 0, zoom: 1}
+    view: { x: 0, y: 0, zoom: 1 },
+    transformations: []
 };
 
 export const nodeIdsReducer = createReducer(
@@ -59,6 +61,30 @@ export const viewReducer = createReducer(
         return {
             ...state,
             view: { x, y, zoom }
+        }
+    }),
+);
+
+
+export const transformationsReducer = createReducer(
+    initialState,
+    on(addNodeFilter, (state, {options}) => {
+        return {
+            ...state,
+            transformations: state.transformations.concat(options)
+        }
+    }),
+    on(removeNodeFilter, (state, {id}) => {
+        return {
+            ...state,
+            transformations: state.transformations.filter(o => o.id !== id)
+        }
+    }),
+    on(updateNodeFilter, (state, {options}) => {
+        return {
+            ...state,
+            transformations: state.transformations.filter(o => o.id !== options.id)
+                .concat(options)
         }
     }),
 );

@@ -7,20 +7,22 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { OgmaService, createEdge, createNode } from './ogma/service/ogma.service';
+import { TransformationService } from './ogma/service/transformation.service';
+
 import { TooltipComponent } from './tooltip.component';
 import { MemoizedSelector, Store } from "@ngrx/store";
 import { getEdgesSelector, getNodesSelector } from "./ogma/store/ogma.selector";
 import { map, Observable } from "rxjs";
 import { AppState } from "./ogma/store/ogma.reducer";
 import { AsyncPipe } from "@angular/common";
-import { EdgeId, NodeId, View } from '@linkurious/ogma/dev';
+import { EdgeId, NodeId, RawGraph, View } from '@linkurious/ogma/dev';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
   standalone: true,
-  providers: [OgmaService],
+  providers: [OgmaService, TransformationService],
   imports: [FormsModule, TooltipComponent, AsyncPipe]
 })
 export class AppComponent implements OnInit, AfterContentInit {
@@ -31,7 +33,9 @@ export class AppComponent implements OnInit, AfterContentInit {
   public edgeIds$!: Observable<EdgeId[]>;
 
 
-  constructor(private ogmaService: OgmaService, private _store: Store<AppState>) { }
+  constructor(private ogmaService: OgmaService,
+    private transformationService: TransformationService,
+    private _store: Store<AppState>) { }
 
   ngOnInit() {
     // pass the ogma instance configuration on init
@@ -40,6 +44,8 @@ export class AppComponent implements OnInit, AfterContentInit {
         backgroundColor: 'rgb(240, 240, 240)'
       }
     });
+    this.transformationService.initConfig(this.ogmaService.ogma);
+
     // ngRx selector
     this.nodeIds$ = this.select(getNodesSelector);
     this.edgeIds$ = this.select(getEdgesSelector);
@@ -50,11 +56,17 @@ export class AppComponent implements OnInit, AfterContentInit {
    */
   async ngAfterContentInit() {
     const response = await fetch('assets/data.json');
-    const graph = await response.json();
+    const graph = await response.json() as RawGraph;
     // atach the Ogma instance to the DOM
     this.ogmaService.ogma.setContainer(this.container.nativeElement);
     await this.ogmaService.addData({
-      nodes: graph.nodes.slice(0, 5),
+      nodes: graph.nodes.slice(0, 5).map((node, id) => ({
+        ...node,
+        id: id + 1,
+        data: {
+          type: id % 2 === 0 ? 'person' : 'company'
+        }
+      })),
       edges: []
     });
     await this.ogmaService.applyStyles({
@@ -68,6 +80,19 @@ export class AppComponent implements OnInit, AfterContentInit {
         }
       }
     });
+    const filterId = this.transformationService.createNodeFilter({
+      enabled: true,
+      duration: 1000,
+      criteria: {
+        key: 'type',
+        operator: 'equal',
+        value: 'person'
+      }
+    });
+
+    setTimeout(() => {
+      this.transformationService.disableNodeFilter(filterId)
+    }, 3000)
     return await this.ogmaService.runLayout();
   }
 
