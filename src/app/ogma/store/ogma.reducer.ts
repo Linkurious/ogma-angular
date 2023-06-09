@@ -1,11 +1,28 @@
 import { createReducer, on } from '@ngrx/store';
 import { increment, decrement, reset } from './ogma.actions';
 
-export const initialState = 0;
+export interface AppState {
+    addedNodes: number;
+}
+export const initialState: AppState = {
+    addedNodes: 0
+};
 
 export const counterReducer = createReducer(
   initialState,
-  on(increment, (state) => state + 1),
-  on(decrement, (state) => state - 1),
-  on(reset, (state) => 0)
+  on(increment, (state) => {
+      return {
+          addedNodes: state.addedNodes + 1
+      }
+  }),
+  on(decrement, (state) => {
+      return {
+          addedNodes: state.addedNodes -1
+      }
+  }),
+  on(reset, (state) => {
+      return {
+          addedNodes: 0
+      }
+  })
 );
