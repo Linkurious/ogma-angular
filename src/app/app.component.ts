@@ -10,10 +10,11 @@ import { OgmaService, createEdge, createNode } from './ogma/service/ogma.service
 import { TooltipComponent } from './tooltip.component';
 import {MemoizedSelector, select, Store} from "@ngrx/store";
 import {increment} from "./ogma/store/ogma.actions";
-import {getCounterSelector} from "./ogma/store/ogma.selector";
+import {getCounterSelector, getNodesSelector} from "./ogma/store/ogma.selector";
 import {map, Observable} from "rxjs";
 import {AppState} from "./ogma/store/ogma.reducer";
 import {AsyncPipe} from "@angular/common";
+import { NodeId } from '@linkurious/ogma/dev';
 
 @Component({
   selector: 'app-root',
@@ -26,7 +27,9 @@ import {AsyncPipe} from "@angular/common";
 export class AppComponent implements OnInit, AfterContentInit {
   @ViewChild('ogmaContainer', { static: true })
   public container!: ElementRef<HTMLElement>;
-  public addedNodes$!: Observable<number>
+  public addedNodes$!: Observable<number>;
+  public nodeIds$!: Observable<NodeId[]>;
+
   constructor(private ogmaService: OgmaService, private _store: Store<AppState>) {}
 
   ngOnInit() {
@@ -38,7 +41,7 @@ export class AppComponent implements OnInit, AfterContentInit {
     });
     // ngRx selector
     this.addedNodes$ = this.select(getCounterSelector);
-
+    this.nodeIds$ = this.select(getNodesSelector);
     // setup more Ogma stuff here, like event listeners and more
   }
 
@@ -47,10 +50,13 @@ export class AppComponent implements OnInit, AfterContentInit {
    */
   async ngAfterContentInit() {
     const response = await fetch('assets/data.json');
-    const data = await response.json();
+    const graph = await response.json();
     // atach the Ogma instance to the DOM
     this.ogmaService.ogma.setContainer(this.container.nativeElement);
-    await this.ogmaService.addData(data);
+    await this.ogmaService.addData({
+      nodes: graph.nodes.slice(0,5),
+      edges: []
+    });
     await this.ogmaService.applyStyles({
       nodeAttributes: {
         color: node => {

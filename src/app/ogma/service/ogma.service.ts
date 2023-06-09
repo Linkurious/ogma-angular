@@ -6,6 +6,9 @@ import Ogma, {
   RawNode,
   NodeStyleRuleDefinition,
 } from '@linkurious/ogma';
+import { AppState } from '../store/ogma.reducer';
+import { Store } from '@ngrx/store';
+import { addNodes } from '../store/ogma.actions';
 
 export const createNode = (id: number): RawNode => ({
   id,
@@ -25,13 +28,14 @@ export const createEdge = (source: NodeId, target: NodeId): RawEdge => ({
 export class OgmaService {
   // expose an instance of Ogma from the service
   public ogma!: Ogma;
-
-  public constructor() {
-    console.log('ogma service constructor');
-  }
+  constructor(private _store: Store<AppState>) {}
 
   public initConfig(configuration = {}) {
     this.ogma = new Ogma(configuration);
+
+    this.ogma.events.on('addNodes', ({ nodes }) => {
+      this._store.dispatch(addNodes({ids: nodes.getId()}));
+    });
   }
 
   public runLayout() {
