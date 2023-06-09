@@ -85,6 +85,17 @@ export class AppComponent implements OnInit, AfterContentInit {
     this._store.dispatch(increment())
   }
 
+  public async removeNode() {
+    const existingNodes = this.ogmaService.getNodes();
+    const randomId = existingNodes
+      .get(Math.floor(Math.random() * existingNodes.size))
+      .getId();
+    const nodes = this.ogmaService.ogma.getNodes([randomId]);
+    await this.ogmaService.removeData({ nodes });
+    await this.ogmaService.runLayout();
+    this._store.dispatch(increment())
+  }
+
   public countNodes() {
     return this.ogmaService.getNodesCount();
   }

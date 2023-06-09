@@ -7,4 +7,6 @@ export const reset = createAction('[Ogma Component] Reset');
 export const addNodes = createAction('[Ogma Component] AddNodes',
 props<{ ids: NodeId[]; }>()
 );
-export const removeNodes = createAction('[Ogma Component] RemoveNodes');
+export const removeNodes = createAction('[Ogma Component] RemoveNodes',
+props<{ ids: NodeId[]; }>()
+);

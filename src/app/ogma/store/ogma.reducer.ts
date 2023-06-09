@@ -36,18 +36,18 @@ export const counterReducer = createReducer(
 export const nodeIdsReducer = createReducer(
     initialState,
     on(addNodes, (state, {ids}) => {
-        console.log('Add nodes')
         const nodeIds = state.nodeIds.concat(ids);
         return {
             ...state,
             nodeIds
         }
     }),
-    on(removeNodes, (state) => {
-        const nodeIds = state.nodeIds;
+    on(removeNodes, (state, {ids}) => {
+        const idsSet = ids.reduce((acc, id) => acc.add(id), new Set<NodeId>());
+        const nodeIds = state.nodeIds.filter(id => !idsSet.has(id));
         return {
             ...state,
-            nodeIds: nodeIds
+            nodeIds
         }
     }),
 );
