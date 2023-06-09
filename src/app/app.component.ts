@@ -9,11 +9,11 @@ import { FormsModule } from '@angular/forms';
 import { OgmaService, createEdge, createNode } from './ogma/service/ogma.service';
 import { TooltipComponent } from './tooltip.component';
 import { MemoizedSelector, Store } from "@ngrx/store";
-import {  getEdgesSelector, getNodesSelector } from "./ogma/store/ogma.selector";
+import { getEdgesSelector, getNodesSelector } from "./ogma/store/ogma.selector";
 import { map, Observable } from "rxjs";
 import { AppState } from "./ogma/store/ogma.reducer";
 import { AsyncPipe } from "@angular/common";
-import { EdgeId, NodeId } from '@linkurious/ogma/dev';
+import { EdgeId, NodeId, View } from '@linkurious/ogma/dev';
 
 @Component({
   selector: 'app-root',
@@ -43,7 +43,6 @@ export class AppComponent implements OnInit, AfterContentInit {
     // ngRx selector
     this.nodeIds$ = this.select(getNodesSelector);
     this.edgeIds$ = this.select(getEdgesSelector);
-    // setup more Ogma stuff here, like event listeners and more
   }
 
   /**

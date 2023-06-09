@@ -5,13 +5,12 @@ import Ogma, {
   RawGraph,
   RawNode,
   NodeStyleRuleDefinition,
-  Edge,
   EdgeList,
   NodeList,
 } from '@linkurious/ogma';
 import { AppState } from '../store/ogma.reducer';
 import { Store } from '@ngrx/store';
-import { addEdges, addNodes, removeEdges, removeNodes } from '../store/ogma.actions';
+import { addEdges, addNodes, removeEdges, removeNodes, setView } from '../store/ogma.actions';
 
 export const createNode = (id: number): RawNode => ({
   id,
@@ -50,6 +49,11 @@ export class OgmaService {
 
     this.ogma.events.on('removeEdges', ({ edges }) => {
       this._store.dispatch(removeEdges({ ids: edges.getId() }));
+    });
+
+    this.ogma.events.on('viewChanged', (evt) => {
+      const { x, y, zoom } = this.ogma.view.get();
+      this._store.dispatch(setView({ x, y, zoom }));
     });
   }
 

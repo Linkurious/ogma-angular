@@ -13,3 +13,6 @@ props<{ ids: EdgeId[]; }>()
 export const removeEdges = createAction('[Ogma Component] RemoveEdges',
 props<{ ids: EdgeId[]; }>()
 );
+export const setView = createAction('[Ogma Component] SetView',
+props<{ x: number; y: number; zoom: number }>()
+);

@@ -1,15 +1,17 @@
 import { createReducer, on } from '@ngrx/store';
-import { addNodes, removeNodes, addEdges, removeEdges } from './ogma.actions';
-import { EdgeId, NodeId } from '@linkurious/ogma/dev';
+import { addNodes, removeNodes, addEdges, removeEdges, setView } from './ogma.actions';
+import { EdgeId, NodeId, View } from '@linkurious/ogma';
 
 export interface AppState {
     nodeIds: NodeId[];
     edgeIds: EdgeId[];
+    view: View;
 
 }
 export const initialState: AppState = {
     nodeIds: [],
     edgeIds: [],
+    view: {x: 0, y: 0, zoom: 1}
 };
 
 export const nodeIdsReducer = createReducer(
@@ -46,6 +48,17 @@ export const edgeIdsReducer = createReducer(
         return {
             ...state,
             edgeIds
+        }
+    }),
+);
+
+
+export const viewReducer = createReducer(
+    initialState,
+    on(setView, (state, { x, y, zoom }) => {
+        return {
+            ...state,
+            view: { x, y, zoom }
         }
     }),
 );
