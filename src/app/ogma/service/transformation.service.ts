@@ -2,11 +2,10 @@ import { Injectable } from '@angular/core';
 import Ogma, {
   Node,
   NodeFilterOptions,
-  NodeGroupingOptions,
   Transformation,
 } from '@linkurious/ogma';
 import { AppState } from '../store/ogma.reducer';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { addNodeFilter, removeNodeFilter, updateNodeFilter } from '../store/ogma.actions';
 
 export type Operator = 'equal' | 'notEqual' | 'greaterThan' | 'lessThan';
@@ -28,9 +27,6 @@ export class TransformationService {
 
   public initConfig(ogma: Ogma) {
     this.ogma = ogma;
-    this.ogma.events.on('transformationEnabled', ({ target }) => {
-    });
-
   }
 
   public createNodeFilter(opts: Omit<FilterState, 'id'>) {

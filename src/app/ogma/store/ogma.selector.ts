@@ -1,8 +1,6 @@
 import { createFeatureSelector, createSelector, MemoizedSelector } from "@ngrx/store";
 import { AppState } from "./ogma.reducer";
 import { EdgeId, NodeId, View } from "@linkurious/ogma/dev";
-import { FilterState } from "../service/transformation.service";
-
 
 export const getNodesState: MemoizedSelector<AppState, AppState> = createFeatureSelector('nodeIds');
 export const getEdgesState: MemoizedSelector<AppState, AppState> = createFeatureSelector('edgeIds');
