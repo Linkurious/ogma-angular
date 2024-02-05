@@ -7,5 +7,5 @@ nodeJob {
   runE2eTests = false
   gitTagPrefix = 'v'
   runBookeeping = true
-  runNpmPublish = true
+  runNpmPublish = false
 }
