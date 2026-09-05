@@ -27,7 +27,7 @@
     "@angular-devkit/build-angular": "17.3.11",
     "@angular/cli": "~17.3.0",
     "@angular/compiler-cli": "17.3.12",
-    "@linkurious/code-tools": "^0.0.15",
+    "@linkurious/code-tools": "^0.2.0",
     "@types/jasmine": "~5.1.0",
     "jasmine-core": "~4.6.0",
     "karma": "~6.4.0",
